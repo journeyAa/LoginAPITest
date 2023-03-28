@@ -1,0 +1,36 @@
+import org.testng.annotations.Test;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+
+public class LoginAPITest {
+  
+  @Test
+  public void testValidLogin() {
+    RestAssured.baseURI = "http://your-api-url.com";
+    RestAssured.given()
+      .contentType(ContentType.JSON)
+      .body("{ \"username\": \"john\", \"password\": \"password123\" }")
+      .when()
+      .post("/login")
+      .then()
+      .statusCode(200)
+      .assertThat()
+      .body("success", equalTo(true))
+      .body("message", equalTo("Login successful"));
+  }
+
+  @Test
+  public void testInvalidLogin() {
+    RestAssured.baseURI = "http://your-api-url.com";
+    RestAssured.given()
+      .contentType(ContentType.JSON)
+      .body("{ \"username\": \"john\", \"password\": \"invalid-password\" }")
+      .when()
+      .post("/login")
+      .then()
+      .statusCode(401)
+      .assertThat()
+      .body("success", equalTo(false))
+      .body("message", equalTo("Invalid username or password"));
+  }
+}
